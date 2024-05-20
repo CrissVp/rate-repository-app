@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import useAuthenticatedUser from '../hooks/useAuthenticatedUser';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Link } from 'react-router-native';
 import Constants from 'expo-constants';
 
@@ -24,6 +25,8 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+	const { user, loading, singOut } = useAuthenticatedUser();
+
 	return (
 		<View style={styles.container}>
 			<ScrollView
@@ -36,11 +39,20 @@ const AppBar = () => {
 						Repositories
 					</Text>
 				</Link>
-				<Link to={'sign-in'}>
-					<Text style={styles.text} fontSize={'subheading'} fontWeight={'bold'}>
-						Sign In
-					</Text>
-				</Link>
+				{!loading &&
+					(user ? (
+						<Pressable onPress={singOut}>
+							<Text style={styles.text} fontSize={'subheading'} fontWeight={'bold'}>
+								Sign Out
+							</Text>
+						</Pressable>
+					) : (
+						<Link to={'sign-in'}>
+							<Text style={styles.text} fontSize={'subheading'} fontWeight={'bold'}>
+								Sign In
+							</Text>
+						</Link>
+					))}
 			</ScrollView>
 		</View>
 	);

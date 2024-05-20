@@ -1,4 +1,6 @@
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useNavigate } from 'react-router-native';
+import useSingIn from '../hooks/useSignIn';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -43,14 +45,24 @@ const validationSchema = yup.object().shape({
 });
 
 const SignIn = () => {
+	const [singIn] = useSingIn();
+	const navigate = useNavigate();
+
 	const signInForm = useFormik({
 		initialValues: {
 			username: '',
 			password: ''
 		},
 		validationSchema,
-		onSubmit: (values) => {
-			console.log({ values });
+		onSubmit: async (values) => {
+			const { username, password } = values;
+
+			try {
+				await singIn({ username, password });
+				navigate('/');
+			} catch (error) {
+				console.log({ error });
+			}
 		}
 	});
 
@@ -62,9 +74,9 @@ const SignIn = () => {
 			<View>
 				<TextInput
 					placeholder='Username'
-					style={[styles.textInput, isUsernameError && { borderColor: theme.colors.error }]}
 					value={signInForm.values.username}
 					onChangeText={signInForm.handleChange('username')}
+					style={[styles.textInput, isUsernameError && { borderColor: theme.colors.error }]}
 				/>
 				{isUsernameError && <Text style={styles.errorText}>{signInForm.errors.username}</Text>}
 			</View>
@@ -72,9 +84,9 @@ const SignIn = () => {
 				<TextInput
 					secureTextEntry
 					placeholder='Password'
-					style={[styles.textInput, isPasswordError && { borderColor: theme.colors.error }]}
 					value={signInForm.values.password}
 					onChangeText={signInForm.handleChange('password')}
+					style={[styles.textInput, isPasswordError && { borderColor: theme.colors.error }]}
 				/>
 				{isPasswordError && <Text style={styles.errorText}>{signInForm.errors.password}</Text>}
 			</View>

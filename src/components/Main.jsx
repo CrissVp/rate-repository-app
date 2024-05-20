@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-native';
 import { StyleSheet, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import theme from '../theme';
 
 import RepositoryList from './RepositoryList';
@@ -9,6 +10,7 @@ import AppBar from './AppBar';
 const Main = () => {
 	return (
 		<View style={styles.container}>
+			<StatusBar style='light' backgroundColor={theme.colors.barBackground} />
 			<AppBar />
 			<Routes>
 				<Route path='/' element={<RepositoryList />} />
